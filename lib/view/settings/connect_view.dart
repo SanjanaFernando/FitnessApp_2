@@ -17,32 +17,32 @@ class _ConnectViewState extends State<ConnectView> {
     {
       "name": "Connect to  Fackbook",
       "icon": "assets/img/fb.png",
-      "color": Color(0xff6F82FE),
+      "color": const Color(0xff6F82FE),
     },
     {
       "name": "Connect to Twitter",
       "icon": "assets/img/twitter.png",
-      "color": Color(0xff70C0FC),
+      "color": const Color(0xff70C0FC),
     },
     {
       "name": "Connect to Linkedln",
       "icon": "assets/img/Linkdin.png",
-      "color": Color(0xff68CCFF),
+      "color": const Color(0xff68CCFF),
     },
     {
       "name": "Connect to Pinterest",
       "icon": "assets/img/pinterest.png",
-      "color": Color(0xffFF6475),
+      "color": const Color(0xffFF6475),
     },
     {
       "name": "Connect to Reddit",
       "icon": "assets/img/reddit.png",
-      "color": Color(0xffFFBD5D),
+      "color": const Color(0xffFFBD5D),
     },
     {
       "name": "Connect to Tumblr",
       "icon": "assets/img/tumblr.png",
-      "color": Color(0xff64B5FF),
+      "color": const Color(0xff64B5FF),
     }
   ];
 

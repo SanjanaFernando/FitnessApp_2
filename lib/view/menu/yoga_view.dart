@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../../common/color_extension.dart';
-import '../../common_widget/response_row.dart';
 
 class YogaView extends StatefulWidget {
   const YogaView({super.key});

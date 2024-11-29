@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:workout_fitness/view/workout/workout_detail_view.dart';
 
 import '../../common/color_extension.dart';
-import '../../common_widget/round_button.dart';
 
 class WorkoutView2 extends StatefulWidget {
   const WorkoutView2({super.key});

@@ -87,7 +87,7 @@ class _RunningHeartViewState extends State<RunningHeartView> {
                       ),
                     ],
                   ),
-                  Container(
+                  SizedBox(
                     width: media.width * 0.55,
                     height: media.width * 0.55,
                     child: CustomPaint(
@@ -131,7 +131,7 @@ class _RunningHeartViewState extends State<RunningHeartView> {
               ],
             ),
           ),
-          Container(
+          SizedBox(
             height: 80,
             child: Column(
               children: [

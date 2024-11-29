@@ -52,7 +52,7 @@ class _RunningDensityViewState extends State<RunningDensityView> {
                       ),
                     ],
                   ),
-                  Container(
+                  SizedBox(
                     width: media.width * 0.55,
                     height: media.width * 0.55,
                     child: CustomPaint(
@@ -96,7 +96,7 @@ class _RunningDensityViewState extends State<RunningDensityView> {
               ],
             ),
           ),
-          Container(
+          SizedBox(
             height: 80,
             child: Column(
               children: [

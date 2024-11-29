@@ -87,7 +87,7 @@ class _RunningLengthViewState extends State<RunningLengthView> {
               ],
             ),
           ),
-          Container(
+          SizedBox(
             height: 80,
             child: Column(
               children: [

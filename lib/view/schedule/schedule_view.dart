@@ -188,6 +188,7 @@ class _ScheduleViewState extends State<ScheduleView> {
                           ),
                         );
                       }
+                      return null;
                       // dateArr
 
                       // if (day.day == 15) {

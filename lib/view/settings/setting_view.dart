@@ -5,7 +5,6 @@ import 'package:workout_fitness/view/settings/connect_view.dart';
 import 'package:workout_fitness/view/settings/select_language_view.dart';
 
 import '../../common/color_extension.dart';
-import '../../common_widget/tip_row.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});

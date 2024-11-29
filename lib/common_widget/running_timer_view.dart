@@ -84,7 +84,7 @@ class _RunningTimerViewState extends State<RunningTimerView> {
                       ),
                     
     
-                    Container(
+                    SizedBox(
                       height: 80,
                       child: Slider(
                         activeColor: TColor.primary,

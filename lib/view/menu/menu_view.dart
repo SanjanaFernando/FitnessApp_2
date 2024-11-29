@@ -3,20 +3,20 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:workout_fitness/view/home/home_view.dart';
-import 'package:workout_fitness/view/meal_plan/meal_plan_view.dart';
+import 'package:workout_fitness/view/meal_plan/meal_plan_view_2.dart';
 import 'package:workout_fitness/view/menu/yoga_view.dart';
 import 'package:workout_fitness/view/settings/setting_view.dart';
 
 import '../../common/color_extension.dart';
 import '../../common_widget/menu_cell.dart';
 import '../../common_widget/plan_row.dart';
-import '../exercise/exercise_view.dart';
 import '../exercise/exercise_view_2.dart';
 import '../meal_plan/meal_plan_view_2.dart';
 import '../running/running_view.dart';
 import '../schedule/schedule_view.dart';
 import '../tips/tips_view.dart';
 import '../weight/weight_view.dart';
+import '../../view/trainplan/train_plan.dart';
 
 class MenuView extends StatefulWidget {
   const MenuView({super.key});
@@ -60,22 +60,17 @@ class _MenuViewState extends State<MenuView> {
   ];
 
   List menuArr = [
-    {"name": "Home", "image": "assets/img/menu_home.png", "tag": "1"},
+    {"name": "Exercises", "image": "assets/img/menu_exercises.png", "tag": "1"},
     {"name": "Weight", "image": "assets/img/menu_weight.png", "tag": "2"},
     {
       "name": "Traning plan",
       "image": "assets/img/menu_traning_plan.png",
       "tag": "3"
     },
-    {
-      "name": "Training Status",
-      "image": "assets/img/menu_traning_status.png",
-      "tag": "4"
-    },
     {"name": "Meal Plan", "image": "assets/img/menu_meal_plan.png", "tag": "5"},
     {"name": "Schedule", "image": "assets/img/menu_schedule.png", "tag": "6"},
     {"name": "Running", "image": "assets/img/menu_running.png", "tag": "7"},
-    {"name": "Exercises", "image": "assets/img/menu_exercises.png", "tag": "8"},
+    {"name": "Tutorials", "image": "assets/img/menu_exercises.png", "tag": "8"},
     {"name": "Tips", "image": "assets/img/menu_tips.png", "tag": "9"},
     {"name": "Settings", "image": "assets/img/menu_settings.png", "tag": "10"},
     {"name": "Support", "image": "assets/img/menu_support.png", "tag": "11"},
@@ -83,7 +78,6 @@ class _MenuViewState extends State<MenuView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
   }
@@ -107,92 +101,91 @@ class _MenuViewState extends State<MenuView> {
                   decoration: BoxDecoration(color: TColor.white),
                   child: SafeArea(
                       child: Padding(
-                    padding: const EdgeInsets.only(left: 25),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: kTextTabBarHeight,
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(22.5),
-                                child: Image.asset("assets/img/u1.png",
-                                    width: 45, height: 45, fit: BoxFit.cover),
+                        padding: const EdgeInsets.only(left: 25),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: kTextTabBarHeight,
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(22.5),
+                                    child: Image.asset("assets/img/u1.png",
+                                        width: 45, height: 45, fit: BoxFit.cover),
+                                  ),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      "Traning Plan",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: TColor.secondaryText,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  )
+                                ],
                               ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  "Traning Plan",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: TColor.secondaryText,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        const Divider(
-                          color: Colors.black26,
-                          height: 1,
-                        ),
-                        Expanded(
-                            child: ListView.builder(
-                                padding:
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            const Divider(
+                              color: Colors.black26,
+                              height: 1,
+                            ),
+                            Expanded(
+                                child: ListView.builder(
+                                    padding:
                                     const EdgeInsets.symmetric(vertical: 50),
-                                itemCount: planArr.length,
-                                itemBuilder: (context, index) {
-                                  var itemObj = planArr[index] as Map? ?? {};
+                                    itemCount: planArr.length,
+                                    itemBuilder: (context, index) {
+                                      var itemObj = planArr[index] as Map? ?? {};
 
-                                  return PlanRow(
-                                    mObj: itemObj,
-                                    onPressed: () {
-                                      // Navigator.pop(context);
-                                      if (index == 1) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
+                                      return PlanRow(
+                                        mObj: itemObj,
+                                        onPressed: () {
+                                          if (index == 1) {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
                                                     const YogaView()));
-                                      }
-                                    },
-                                  );
-                                })),
-                        const Divider(
-                          color: Colors.black26,
-                          height: 1,
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          height: kTextTabBarHeight,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Switch Account",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: TColor.secondaryText,
-                                    fontWeight: FontWeight.w700),
+                                          }
+                                        },
+                                      );
+                                    })),
+                            const Divider(
+                              color: Colors.black26,
+                              height: 1,
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Container(
+                              height: kTextTabBarHeight,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Switch Account",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: TColor.secondaryText,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 20),
+                                    child: Image.asset("assets/img/next.png",
+                                        width: 18, height: 18),
+                                  )
+                                ],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 20),
-                                child: Image.asset("assets/img/next.png",
-                                    width: 18, height: 18),
-                              )
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )),
+                      )),
                 ),
                 Column(
                   children: [
@@ -275,7 +268,7 @@ class _MenuViewState extends State<MenuView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text("Code For Any",
+                              Text("RUH Fitness",
                                   style: TextStyle(
                                       fontSize: 20,
                                       color: TColor.white,
@@ -320,16 +313,19 @@ class _MenuViewState extends State<MenuView> {
                             builder: (context) => const HomeView()));
                     break;
                   case "2":
-                     Navigator.push(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const WeightView()));
                     break;
                   case "3":
-                    Scaffold.of(context).openDrawer();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TrainPlan()));
                     break;
-                   case "5":
-                     Navigator.push(
+                  case "5":
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const MealPlanView2()));
@@ -340,25 +336,25 @@ class _MenuViewState extends State<MenuView> {
                         MaterialPageRoute(
                             builder: (context) => const ScheduleView()));
                     break;
-                    case "7":
+                  case "7":
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const RunningView()));
                     break;
-                   case "8":
+                  case "8":
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const ExerciseView2()));
                     break;
-                   case "9":
-                  Navigator.push(
+                  case "9":
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const TipsView()));
                     break;
-                    case "10":
+                  case "10":
                     Navigator.push(
                         context,
                         MaterialPageRoute(
