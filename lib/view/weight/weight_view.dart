@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -26,13 +27,23 @@ class _WeightViewState extends State<WeightView> {
     final weight = weightController.text.trim(); // Get weight input
     final formattedDate = DateFormat('EEEE, MMM d').format(selectedDate);
 
+    final user = FirebaseAuth.instance.currentUser; // Get current user
+    if (user == null) {
+      print("No user logged in!");
+      return;
+    }
+
     if (weight.isNotEmpty) {
       try {
         // Cycle through the image URLs
         String imageUrl = imageUrls[currentImageIndex];
 
-        // Save to Firestore
-        await FirebaseFirestore.instance.collection('weights').add({
+        // Save to Firestore under user's ID
+        await FirebaseFirestore.instance
+            .collection('weights')
+            .doc(user.uid) // Use user ID as the document ID
+            .collection('userWeights') // Nested collection for user's weights
+            .add({
           'date': selectedDate, // Store as Firestore Timestamp
           'weight': weight,     // Store weight
           'image': imageUrl,    // Store image
@@ -68,15 +79,35 @@ class _WeightViewState extends State<WeightView> {
     }
   }
 
-  /// Fetch weights from Firestore
+  /// Fetch weights for the logged-in user
   Stream<QuerySnapshot> _fetchWeights() {
-    return FirebaseFirestore.instance.collection('weights').orderBy('date').snapshots();
+    final user = FirebaseAuth.instance.currentUser; // Get current user
+    if (user == null) {
+      return const Stream.empty(); // If no user, return empty stream
+    }
+    return FirebaseFirestore.instance
+        .collection('weights')
+        .doc(user.uid) // Use user ID
+        .collection('userWeights') // Fetch weights for the current user
+        .orderBy('date')
+        .snapshots();
   }
 
   /// Delete a weight from Firestore
   void _deleteWeight(String documentId) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print("No user logged in!");
+      return;
+    }
+
     try {
-      await FirebaseFirestore.instance.collection('weights').doc(documentId).delete();
+      await FirebaseFirestore.instance
+          .collection('weights')
+          .doc(user.uid)
+          .collection('userWeights')
+          .doc(documentId)
+          .delete();
       print("Weight successfully deleted from Firestore");
     } catch (error) {
       print("Failed to delete weight: $error");

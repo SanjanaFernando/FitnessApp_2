@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:workout_fitness/view/menu/menu_view.dart';
 
 import 'common/color_extension.dart';
+import 'common_widget/RestartWidget.dart';
 
 Future<void> main() async {
-  // Ensure Flutter widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
@@ -31,8 +31,11 @@ Future<void> main() async {
     debugPrint("Error initializing Firebase: $e");
   }
 
-  // Run the app
-  runApp(const MyApp());
+  runApp(
+    RestartWidget(
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

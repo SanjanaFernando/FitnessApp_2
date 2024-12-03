@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../settings/switch_account_view.dart'; // Ensure this path is correct
-
+import 'package:workout_fitness/common_widget/RestartWidget.dart';
 class LoginPage extends StatefulWidget {
+  final String email;
+
+  // Constructor to accept email from SwitchAccountView
+  const LoginPage({Key? key, required this.email}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -13,6 +18,13 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-populate email field with the email passed from SwitchAccountView
+    _emailController.text = widget.email;
+  }
 
   void _login() async {
     if (!_formKey.currentState!.validate()) return;
@@ -35,11 +47,8 @@ class _LoginPageState extends State<LoginPage> {
         const SnackBar(content: Text("Logged in successfully!")),
       );
 
-      // Navigate to the main screen or dashboard
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => SwitchAccountView()),
-      );
+      // Restart the app to apply changes for the new user
+      RestartWidget.restartApp(context);
     } on FirebaseAuthException catch (e) {
       String errorMessage;
       switch (e.code) {
@@ -63,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

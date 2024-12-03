@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'login_view.dart'; // Ensure this path is correct
+import '../../view/Authentication/login_view.dart';
 
 class CreateAccountPage extends StatefulWidget {
   @override
@@ -212,9 +213,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 const SizedBox(height: 24),
                 TextButton(
                   onPressed: () {
+                    // Pass the email to the LoginPage when navigating
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(email: _emailController.text.trim()), // Pass the email here
+                      ),
                     );
                   },
                   child: const Text("Already have an account? Log in"),
