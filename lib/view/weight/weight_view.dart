@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -10,34 +11,49 @@ class WeightView extends StatefulWidget {
 }
 
 class _WeightViewState extends State<WeightView> {
-  final List<Map<String, String>> myWeightArr = [
-    {"name": "Monday, NOV 20", "image": "assets/img/w_1.png", "weight": "70 kg"},
-    {"name": "Tuesday, NOV 21", "image": "assets/img/w_2.png", "weight": "71 kg"},
-    {"name": "Wednesday, NOV 22", "image": "assets/img/w_3.png", "weight": "72 kg"},
-    {"name": "Thursday, NOV 23", "image": "assets/img/w_2.png", "weight": "73 kg"},
-    {"name": "Friday, NOV 24", "image": "assets/img/w_1.png", "weight": "74 kg"},
-  ];
-
-
-  int currentIndex = 0;
   final CarouselController _carouselController = CarouselController();
   final TextEditingController weightController = TextEditingController();
   DateTime selectedDate = DateTime.now();
+  final List<String> imageUrls = [
+    "https://plus.unsplash.com/premium_photo-1726862769772-dc8c33d980a3?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://plus.unsplash.com/premium_photo-1664477098603-042afd7d70de?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  ];
+  int currentImageIndex = 0; // To keep track of the image index
 
-  void _addWeight() {
-    setState(() {
-      myWeightArr.add({
-        "name": DateFormat('EEEE, MMM d').format(selectedDate),
-        "image": "assets/img/w_2.png", // Use this specific image for all new entries
-        "weight": "${weightController.text.trim()} kg",
-      });
+  /// Add weight to Firestore
+  void _addWeight() async {
+    final weight = weightController.text.trim(); // Get weight input
+    final formattedDate = DateFormat('EEEE, MMM d').format(selectedDate);
+
+    if (weight.isNotEmpty) {
+      try {
+        // Cycle through the image URLs
+        String imageUrl = imageUrls[currentImageIndex];
+
+        // Save to Firestore
+        await FirebaseFirestore.instance.collection('weights').add({
+          'date': selectedDate, // Store as Firestore Timestamp
+          'weight': weight,     // Store weight
+          'image': imageUrl,    // Store image
+        });
+        print("Data successfully saved to Firestore");
+
+        // Update the currentImageIndex to the next image in the list
+        setState(() {
+          currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+        });
+      } catch (error) {
+        print("Failed to save data to Firestore: $error");
+      }
+
       weightController.clear();
       selectedDate = DateTime.now();
-    });
-    Navigator.pop(context); // Close the bottom sheet
+      Navigator.pop(context); // Close the bottom sheet
+    }
   }
 
-
+  /// Show date picker to select a date
   void _selectDate() async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -52,120 +68,158 @@ class _WeightViewState extends State<WeightView> {
     }
   }
 
+  /// Fetch weights from Firestore
+  Stream<QuerySnapshot> _fetchWeights() {
+    return FirebaseFirestore.instance.collection('weights').orderBy('date').snapshots();
+  }
+
+  /// Delete a weight from Firestore
+  void _deleteWeight(String documentId) async {
+    try {
+      await FirebaseFirestore.instance.collection('weights').doc(documentId).delete();
+      print("Weight successfully deleted from Firestore");
+    } catch (error) {
+      print("Failed to delete weight: $error");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Weight Last 3 Weeks")),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.5, // Limit height
-              child: CarouselSlider.builder(
-                carouselController: _carouselController,
-                options: CarouselOptions(
-                  autoPlay: false,
-                  enlargeCenterPage: true,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      currentIndex = index;
-                    });
+      appBar: AppBar(title: const Text("Weight Tracker")),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _fetchWeights(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text("No data found. Add your weight."));
+          }
+
+          final weightDocs = snapshot.data!.docs;
+
+          return Column(
+            children: [
+              Expanded(
+                child: CarouselSlider.builder(
+                  carouselController: _carouselController,
+                  options: CarouselOptions(
+                    autoPlay: false,
+                    enlargeCenterPage: true,
+                  ),
+                  itemCount: weightDocs.length,
+                  itemBuilder: (context, index, realIndex) {
+                    final data = weightDocs[index].data() as Map<String, dynamic>;
+                    final date = (data['date'] as Timestamp).toDate();
+                    final weight = data['weight'];
+                    final imageUrl = data['image'] ?? 'https://via.placeholder.com/150'; // Default image
+                    final documentId = weightDocs[index].id; // Get document ID for deletion
+
+                    return Container(
+                      margin: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.grey.shade300,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Stack(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                height: 130,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  image: DecorationImage(
+                                    image: NetworkImage(imageUrl),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: IconButton(
+                                  icon: const Icon(Icons.delete, color: Colors.white),
+                                  onPressed: () {
+                                    _deleteWeight(documentId); // Delete the record
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            DateFormat('EEEE, MMM d').format(date),
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            "$weight kg",
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    );
                   },
                 ),
-                itemCount: myWeightArr.length,
-                itemBuilder: (context, index, realIndex) {
-                  final Map<String, String> dObj = myWeightArr[index];
-                  return Container(
-                    margin: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.grey.shade300,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            image: DecorationImage(
-                              image: AssetImage(dObj["image"]!),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          dObj["name"]!,
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  );
-                },
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Text(
-                    "Selected Date: ${myWeightArr[currentIndex]["name"]!}",
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Weight: ${myWeightArr[currentIndex]["weight"]!}",
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+            ],
+          );
+        },
       ),
+      // Floating Action Button to add weight
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
             context: context,
-            isScrollControlled: true,
+            isScrollControlled: true, // Ensures the BottomSheet can adjust for keyboard
             builder: (context) {
-              return Padding(
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                  top: 16,
-                  left: 16,
-                  right: 16,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: weightController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: "Enter your weight (kg)",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Text("Selected Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}"),
-                        const Spacer(),
-                        ElevatedButton(
-                          onPressed: _selectDate,
-                          child: const Text("Pick Date"),
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+                    top: 16,
+                    left: 16,
+                    right: 16,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Input field for weight
+                      TextField(
+                        controller: weightController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: "Enter your weight (kg)",
+                          border: OutlineInputBorder(),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _addWeight,
-                      child: const Text("Add Weight"),
-                    ),
-                  ],
+                      ),
+                      const SizedBox(height: 16),
+                      // Date picker
+                      Row(
+                        children: [
+                          Text(
+                            "Selected Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}",
+                          ),
+                          const Spacer(),
+                          ElevatedButton(
+                            onPressed: _selectDate,
+                            child: const Text("Pick Date"),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      // Button to add weight
+                      ElevatedButton(
+                        onPressed: _addWeight,
+                        child: const Text("Add Weight"),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

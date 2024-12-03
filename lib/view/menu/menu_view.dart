@@ -17,6 +17,8 @@ import '../schedule/schedule_view.dart';
 import '../tips/tips_view.dart';
 import '../weight/weight_view.dart';
 import '../../view/trainplan/train_plan.dart';
+import '../../view/settings/switch_account_view.dart';
+import '../Authentication/register_view.dart';
 
 class MenuView extends StatefulWidget {
   const MenuView({super.key});
@@ -87,133 +89,138 @@ class _MenuViewState extends State<MenuView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       drawer: Drawer(
-          width: media.width,
-          backgroundColor: Colors.transparent,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 5.0,
-              sigmaY: 5,
-            ),
-            child: Stack(
-              children: [
-                Container(
-                  width: media.width * 0.78,
-                  decoration: BoxDecoration(color: TColor.white),
-                  child: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 25),
-                        child: Column(
-                          children: [
-                            Container(
-                              height: kTextTabBarHeight,
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(22.5),
-                                    child: Image.asset("assets/img/u1.png",
-                                        width: 45, height: 45, fit: BoxFit.cover),
-                                  ),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      "Traning Plan",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color: TColor.secondaryText,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            const Divider(
-                              color: Colors.black26,
-                              height: 1,
-                            ),
-                            Expanded(
-                                child: ListView.builder(
-                                    padding:
-                                    const EdgeInsets.symmetric(vertical: 50),
-                                    itemCount: planArr.length,
-                                    itemBuilder: (context, index) {
-                                      var itemObj = planArr[index] as Map? ?? {};
-
-                                      return PlanRow(
-                                        mObj: itemObj,
-                                        onPressed: () {
-                                          if (index == 1) {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                    const YogaView()));
-                                          }
-                                        },
-                                      );
-                                    })),
-                            const Divider(
-                              color: Colors.black26,
-                              height: 1,
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Container(
-                              height: kTextTabBarHeight,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Switch Account",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: TColor.secondaryText,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 20),
-                                    child: Image.asset("assets/img/next.png",
-                                        width: 18, height: 18),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      )),
-                ),
-                Column(
-                  children: [
-                    const SizedBox(
-                      height: kToolbarHeight - 25,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+        width: media.width,
+        backgroundColor: Colors.transparent,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 5.0,
+            sigmaY: 5,
+          ),
+          child: Stack(
+            children: [
+              Container(
+                width: media.width * 0.78,
+                decoration: BoxDecoration(color: TColor.white),
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 25),
+                    child: Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15),
-                          child: IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: Image.asset(
-                                "assets/img/meun_close.png",
-                                width: 25,
-                                height: 25,
-                              )),
+                        Container(
+                          height: kTextTabBarHeight,
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(22.5),
+                                child: Image.asset("assets/img/u1.png",
+                                    width: 45, height: 45, fit: BoxFit.cover),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  "Traning Plan",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: TColor.secondaryText,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        const Divider(
+                          color: Colors.black26,
+                          height: 1,
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(vertical: 50),
+                            itemCount: planArr.length,
+                            itemBuilder: (context, index) {
+                              var itemObj = planArr[index] as Map? ?? {};
+
+                              return PlanRow(
+                                mObj: itemObj,
+                                onPressed: () {
+                                  if (index == 1) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                          const YogaView()),
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        const Divider(
+                          color: Colors.black26,
+                          height: 1,
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                          height: kTextTabBarHeight,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Switch Account",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: TColor.secondaryText,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 20),
+                                child: Image.asset("assets/img/next.png",
+                                    width: 18, height: 18),
+                              )
+                            ],
+                          ),
                         ),
                       ],
-                    )
-                  ],
-                )
-              ],
-            ),
-          )),
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  const SizedBox(
+                    height: kToolbarHeight - 25,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 15),
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Image.asset(
+                            "assets/img/meun_close.png",
+                            width: 25,
+                            height: 25,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
@@ -234,10 +241,12 @@ class _MenuViewState extends State<MenuView> {
                     width: media.width,
                     height: media.width * 0.8,
                     decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.transparent, Colors.black],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter)),
+                      gradient: LinearGradient(
+                        colors: [Colors.transparent, Colors.black],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -252,41 +261,58 @@ class _MenuViewState extends State<MenuView> {
                               borderRadius: BorderRadius.circular(27)),
                           alignment: Alignment.center,
                           child: ClipRRect(
-                              borderRadius: BorderRadius.circular(25),
-                              child: Image.asset(
-                                "assets/img/u1.png",
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              )),
+                            borderRadius: BorderRadius.circular(25),
+                            child: Image.asset(
+                              "assets/img/u1.png",
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                         const SizedBox(
                           width: 15,
                         ),
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text("RUH Fitness",
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                    const SwitchAccountView()),
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "RUH Fitness",
                                   style: TextStyle(
-                                      fontSize: 20,
-                                      color: TColor.white,
-                                      fontWeight: FontWeight.w700)),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              Text("Profile",
+                                    fontSize: 20,
+                                    color: TColor.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                Text(
+                                  "Profile",
                                   style: TextStyle(
-                                      fontSize: 15,
-                                      color: TColor.white,
-                                      fontWeight: FontWeight.w500))
-                            ],
+                                    fontSize: 15,
+                                    color: TColor.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             )
@@ -295,10 +321,11 @@ class _MenuViewState extends State<MenuView> {
         body: GridView.builder(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 15,
-              mainAxisSpacing: 15,
-              childAspectRatio: 1),
+            crossAxisCount: 3,
+            crossAxisSpacing: 15,
+            mainAxisSpacing: 15,
+            childAspectRatio: 1,
+          ),
           itemCount: menuArr.length,
           itemBuilder: ((context, index) {
             var mObj = menuArr[index] as Map? ?? {};
@@ -308,58 +335,78 @@ class _MenuViewState extends State<MenuView> {
                 switch (mObj["tag"].toString()) {
                   case "1":
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeView()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeView()),
+                    );
                     break;
                   case "2":
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const WeightView()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const WeightView()),
+                    );
                     break;
                   case "3":
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const TrainPlan()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const TrainPlan()),
+                    );
                     break;
                   case "5":
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MealPlanView2()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MealPlanView2()),
+                    );
                     break;
                   case "6":
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ScheduleView()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ScheduleView()),
+                    );
                     break;
                   case "7":
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RunningView()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RunningView()),
+                    );
                     break;
                   case "8":
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ExerciseView2()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ExerciseView2()),
+                    );
                     break;
                   case "9":
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const TipsView()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const TipsView()),
+                    );
                     break;
                   case "10":
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SettingsView()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingsView()),
+                    );
                     break;
+
+
+// Inside the onPressed method for the "Support" menu option
+                  case "11":
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CreateAccountPage()),
+                    );
+                    break;
+
+
                   default:
                 }
               },
