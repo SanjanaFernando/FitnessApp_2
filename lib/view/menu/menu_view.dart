@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:workout_fitness/view/Authentication/register_view.dart';
-import 'package:workout_fitness/view/home/home_view.dart';
+import 'package:workout_fitness/view/exercise/home_view.dart';
 import 'package:workout_fitness/view/meal_plan/meal_plan_view_2.dart';
 
 
@@ -14,7 +14,7 @@ import 'package:workout_fitness/view/user/user_view.dart';
 import '../../common/color_extension.dart';
 import '../../common_widget/menu_cell.dart';
 import '../../common_widget/plan_row.dart';
-import '../exercise/exercise_view_2.dart';
+import '../tutorials/exercise_view_2.dart';
 import '../meal_plan/meal_plan_view_2.dart';
 import '../running/running_view.dart';
 import '../schedule/schedule_view.dart';

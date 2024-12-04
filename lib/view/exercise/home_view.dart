@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../view/home/ExerciseTimerView.dart';
+import '../../view/exercise/ExerciseTimerView.dart';
 import '../../common/color_extension.dart';
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -51,8 +51,8 @@ class _HomeViewState extends State<HomeView> {
           ),
           backgroundColor: TColor.primary,
           bottom: TabBar(
-            labelColor: TColor.white,
-            unselectedLabelColor: TColor.gray,
+            labelColor: TColor.primaryText,
+            unselectedLabelColor: TColor.secondaryText,
             indicatorColor: TColor.green,
             tabs: dataArr.map((category) {
               return Tab(

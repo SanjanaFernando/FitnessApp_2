@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:workout_fitness/common_widget/RestartWidget.dart';
 class UserDetailsPage extends StatefulWidget {
   const UserDetailsPage({Key? key}) : super(key: key);
 
@@ -17,20 +17,18 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
 
   bool isLoading = false;
 
-  // Fetching user data stream based on the logged-in user's UID
   Stream<DocumentSnapshot> _fetchUserDetails() {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      return const Stream.empty(); // Return an empty stream if no user is logged in
+      return const Stream.empty();
     }
 
     return FirebaseFirestore.instance
-        .collection('users') // Assuming the collection is 'user'
-        .doc(user.uid) // Using the current user's UID to fetch their document
+        .collection('users')
+        .doc(user.uid)
         .snapshots();
   }
 
-  // Update user details in Firestore
   Future<void> updateUserDetails() async {
     setState(() {
       isLoading = true;
@@ -40,7 +38,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-          'name': nameController.text.trim(),
+          'username': nameController.text.trim(),
           'birthYear': int.tryParse(birthYearController.text.trim()) ?? 0,
           'weight': double.tryParse(weightController.text.trim()) ?? 0.0,
           'height': double.tryParse(heightController.text.trim()) ?? 0.0,
@@ -60,6 +58,44 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       });
     }
   }
+
+  Future<void> deleteUserAccount() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Delete Firestore document
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).delete();
+
+        // Delete Firebase Authentication user
+        await user.delete();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Account deleted successfully!")),
+        );
+
+        // Restart the app
+        // Restart the app to apply changes for the new user
+        RestartWidget.restartApp(context);
+      }
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error deleting account: ${e.message}")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Unexpected error: $e")),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +121,6 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
 
           var userData = snapshot.data!.data() as Map<String, dynamic>;
 
-          // Set initial values of text controllers from fetched user data
           nameController.text = userData['username'] ?? '';
           birthYearController.text = userData['birthYear']?.toString() ?? '';
           weightController.text = userData['weight']?.toString() ?? '';
@@ -106,10 +141,6 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                   decoration: InputDecoration(
                     labelText: "Name",
                     border: const OutlineInputBorder(),
-                    labelStyle: TextStyle(color: Colors.blue),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -119,10 +150,6 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                   decoration: InputDecoration(
                     labelText: "Birth Year",
                     border: const OutlineInputBorder(),
-                    labelStyle: TextStyle(color: Colors.blue),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -132,10 +159,6 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                   decoration: InputDecoration(
                     labelText: "Weight (kg)",
                     border: const OutlineInputBorder(),
-                    labelStyle: TextStyle(color: Colors.blue),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -145,29 +168,24 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                   decoration: InputDecoration(
                     labelText: "Height (cm)",
                     border: const OutlineInputBorder(),
-                    labelStyle: TextStyle(color: Colors.blue),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: isLoading ? null : updateUserDetails,
+                  child: isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text("Update Details"),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: isLoading ? null : deleteUserAccount,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.red,
                   ),
                   child: isLoading
-                      ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
-                      : const Text("Update Details"),
+                      ? const CircularProgressIndicator()
+                      : const Text("Delete Account"),
                 ),
               ],
             ),

@@ -136,7 +136,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       const Divider(color: Colors.black26, height: 1),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
                         child: TextFormField(
                           controller: weightController,
                           keyboardType: TextInputType.number,
@@ -147,7 +147,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
 
                         child: TextFormField(
                           controller: heightController,
