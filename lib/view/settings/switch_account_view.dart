@@ -93,17 +93,20 @@ class SwitchAccountView extends StatelessWidget {
                     },
                   ),
                 ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: () => _registerAccount(context),
-                  icon: const Icon(Icons.add),
-                  label: const Text("Register New Account"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                Padding(
+                  padding: const EdgeInsets.only(top: 0.0,bottom: 30), // Adjust the top padding to move the button up
+                  child: ElevatedButton.icon(
+                    onPressed: () => _registerAccount(context),
+                    icon: const Icon(Icons.add),
+                    label: const Text("Register New Account"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 10.0), // Smaller vertical padding
+                    ),
                   ),
-                ),
+                )
+
               ],
             ),
           );

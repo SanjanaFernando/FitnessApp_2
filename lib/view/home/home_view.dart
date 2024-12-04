@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../view/home/ExerciseTimerView.dart'; // Import the ExerciseTimerView here
-
+import '../../view/home/ExerciseTimerView.dart';
+import '../../common/color_extension.dart';
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -30,7 +30,7 @@ class _HomeViewState extends State<HomeView> {
     },
     {
       "name": "Stretch",
-      "image": "assets/img/stretch.png", // Add an image here
+      "image": "assets/img/stretch.png",
       "exercises": [
         {"number": "1", "title": "Forward Bend", "time": "3 min"},
         {"number": "2", "title": "Quad Stretch", "time": "2 min"},
@@ -45,8 +45,15 @@ class _HomeViewState extends State<HomeView> {
       length: dataArr.length,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Workout Exercises"),
+          title: const Text(
+            "Workout Exercises",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: TColor.primary,
           bottom: TabBar(
+            labelColor: TColor.white,
+            unselectedLabelColor: TColor.gray,
+            indicatorColor: TColor.green,
             tabs: dataArr.map((category) {
               return Tab(
                 text: category["name"],
@@ -63,14 +70,39 @@ class _HomeViewState extends State<HomeView> {
               itemBuilder: (context, index) {
                 var exercise = exercises[index];
                 return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: ListTile(
-                    title: Text(exercise["title"]!),
-                    subtitle: Text("Time: ${exercise["time"]}"),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 8, horizontal: 16),
+                    title: Text(
+                      exercise["title"]!,
+                      style: TextStyle(
+                          color: TColor.primaryText,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      "Time: ${exercise["time"]}",
+                      style: TextStyle(color: TColor.secondaryText),
+                    ),
                     leading: CircleAvatar(
-                      child: Text(exercise["number"]!),
+                      backgroundColor: TColor.primary.withOpacity(0.2),
+                      child: Text(
+                        exercise["number"]!,
+                        style: TextStyle(color: TColor.primary),
+                      ),
                     ),
                     trailing: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: TColor.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -82,7 +114,10 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         );
                       },
-                      child: const Text("Start"),
+                      child: const Text(
+                        "Start",
+                        style: TextStyle(fontSize: 14, color: Colors.white),
+                      ),
                     ),
                   ),
                 );

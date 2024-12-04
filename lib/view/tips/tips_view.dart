@@ -106,7 +106,6 @@ class _TipsViewState extends State<TipsView> {
   ];
 
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,7 +139,8 @@ class _TipsViewState extends State<TipsView> {
                   fontWeight: FontWeight.w600,
                   fontSize: 16),
             ),
-            trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black54),
+            trailing: const Icon(
+                Icons.arrow_forward_ios, color: Colors.black54),
             onTap: () {
               Navigator.push(
                 context,
@@ -151,48 +151,14 @@ class _TipsViewState extends State<TipsView> {
             },
           );
         },
-        separatorBuilder: (context, index) => const Divider(
+        separatorBuilder: (context, index) =>
+        const Divider(
           color: Colors.black26,
           height: 1,
         ),
         itemCount: tipsArr.length,
       ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 1,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              InkWell(
-                onTap: () {},
-                child: Image.asset("assets/img/menu_running.png",
-                    width: 25, height: 25),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Image.asset("assets/img/menu_meal_plan.png",
-                    width: 25, height: 25),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Image.asset("assets/img/menu_home.png",
-                    width: 25, height: 25),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Image.asset("assets/img/menu_weight.png",
-                    width: 25, height: 25),
-              ),
-              InkWell(
-                onTap: () {},
-                child:
-                Image.asset("assets/img/more.png", width: 25, height: 25),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
+
 }

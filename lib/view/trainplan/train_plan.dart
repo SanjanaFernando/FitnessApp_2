@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import '../../common/color_extension.dart';
 
 class TrainPlan extends StatefulWidget {
   const TrainPlan({super.key});
@@ -11,7 +11,6 @@ class TrainPlan extends StatefulWidget {
 class _TrainPlanState extends State<TrainPlan> {
   final TextEditingController weightController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
 
   String bmiResult = "";
   String fitnessEvaluation = "";
@@ -211,6 +210,7 @@ class _TrainPlanState extends State<TrainPlan> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Personalized Training Plan"),
+        backgroundColor: TColor.primary,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -218,59 +218,108 @@ class _TrainPlanState extends State<TrainPlan> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 "Enter your details:",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: TColor.primaryText,
+                ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: weightController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Weight (kg)",
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
+                  labelStyle: TextStyle(color: TColor.secondaryText),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: TColor.primary),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: heightController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Height (cm)",
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
+                  labelStyle: TextStyle(color: TColor.secondaryText),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: TColor.primary),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _calculateBMI,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: TColor.primary,
+                  foregroundColor: TColor.white,
+                ),
                 child: const Text("Calculate BMI & Show Plan"),
               ),
               const SizedBox(height: 16),
               if (bmiResult.isNotEmpty)
                 Text(
                   bmiResult,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: TColor.primaryText,
+                  ),
                 ),
               const SizedBox(height: 16),
               if (trainingPlan.isNotEmpty) ...[
-                const Text(
+                Text(
                   "Your 4-Week Training Plan:",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: TColor.primaryText,
+                  ),
                 ),
                 const SizedBox(height: 8),
-                ...trainingPlan.map((week) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        week["week"],
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ...trainingPlan.map((week) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Card(
+                      color: TColor.gray,
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      ...week["plan"].map<Widget>((exercise) => Text("• ${exercise['name']} (${exercise['time']})")).toList(),
-                    ],
-                  ),
-                )),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              week["week"],
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: TColor.primaryText,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            ...week["plan"].map<Widget>((exercise) {
+                              return Text(
+                                "• ${exercise['name']} (${exercise['time']})",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: TColor.secondaryText,
+                                ),
+                              );
+                            }).toList(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
               ],
             ],
           ),

@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:workout_fitness/view/settings/switch_account_view.dart';
 import '../../common/color_extension.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -16,7 +15,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
   String? username;
   double? weight;
   double? height;
-  double? bmi;
+  int? birthYear;
+  TextEditingController weightController = TextEditingController();
+  TextEditingController heightController = TextEditingController();
 
   @override
   void initState() {
@@ -34,23 +35,54 @@ class _CustomDrawerState extends State<CustomDrawer> {
             .get();
         setState(() {
           username = userDoc['username'] ?? "Profile";
-          weight = userDoc['weight'] ?? 0.0;
-          height = userDoc['height'] ?? 0.0;
-          bmi = (weight != null && height != null && height! > 0) ? weight! / (height! * height!) : 0.0;
+          weight = userDoc['weight']?.toDouble() ?? 0.0;
+          height = userDoc['height']?.toDouble() ?? 0.0;
+          birthYear = userDoc['birthYear'] ?? 2000;
+          weightController.text = weight.toString();
+          heightController.text = height.toString();
         });
       }
     } catch (e) {
       debugPrint("Error fetching user details: $e");
     }
   }
+
+  void updateUserDetails() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+          'weight': double.tryParse(weightController.text) ?? weight,
+          'height': double.tryParse(heightController.text) ?? height,
+        });
+        setState(() {
+          weight = double.tryParse(weightController.text);
+          height = double.tryParse(heightController.text);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Details updated successfully!')),
+        );
+      }
+    } catch (e) {
+      debugPrint("Error updating user details: $e");
+    }
+  }
+
   double? _calculateBMI(double? weight, double? height) {
     if (weight != null && height != null && height > 0) {
-      // Convert height from cm to meters and calculate BMI
       double heightInMeters = height / 100;
       return weight / (heightInMeters * heightInMeters);
     }
-    return null; // Return null if weight or height is not available
+    return null;
   }
+
+  int? _calculateAge(int? birthYear) {
+    if (birthYear != null) {
+      return DateTime.now().year - birthYear;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -84,7 +116,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             const SizedBox(width: 20),
                             Expanded(
                               child: Text(
-                                "Training Plan",
+                                "User Details",
                                 style: TextStyle(
                                     fontSize: 20,
                                     color: TColor.secondaryText,
@@ -100,36 +132,40 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         title: Text("Username: $username"),
                       ),
                       ListTile(
-                        title: Text("Weight: ${weight ?? 0.0} kg"),
+                        title: Text("Age: ${_calculateAge(birthYear) ?? 'Unknown'} years"),
                       ),
-                      ListTile(
-                        title: Text("Height: ${height ?? 0.0} cm"),
-                      ),
-                      ListTile(
-                        title: Text("BMI: ${_calculateBMI(weight, height)?.toStringAsFixed(2) ?? '0.0'}"),
-                      ),
-                      const SizedBox(height: 15),
                       const Divider(color: Colors.black26, height: 1),
-                      const SizedBox(height: 15),
-                      Container(
-                        height: kTextTabBarHeight,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Switch Account",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: TColor.secondaryText,
-                                  fontWeight: FontWeight.w700),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: Image.asset("assets/img/next.png",
-                                  width: 18, height: 18),
-                            ),
-                          ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 5),
+                        child: TextFormField(
+                          controller: weightController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            labelText: "Weight (kg)",
+                            border: OutlineInputBorder(),
+                          ),
                         ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 5),
+
+                        child: TextFormField(
+                          controller: heightController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            labelText: "Height (cm)",
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: updateUserDetails,
+                        child: const Text("Update Details"),
+                      ),
+                      const Divider(color: Colors.black26, height: 1),
+                      ListTile(
+                        title: Text(
+                            "BMI: ${_calculateBMI(weight, height)?.toStringAsFixed(2) ?? '0.0'}"),
                       ),
                     ],
                   ),
@@ -150,8 +186,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         },
                         icon: Image.asset(
                           "assets/img/meun_close.png", // Ensure this path is correct
-                          width: 30, // Explicitly set the size
-                          height: 30, // Adjust size accordingly
+                          width: 30,
+                          height: 30,
                         ),
                       ),
                     ),

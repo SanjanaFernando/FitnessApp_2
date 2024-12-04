@@ -7,8 +7,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:workout_fitness/view/Authentication/register_view.dart';
 import 'package:workout_fitness/view/home/home_view.dart';
 import 'package:workout_fitness/view/meal_plan/meal_plan_view_2.dart';
-import 'package:workout_fitness/view/menu/yoga_view.dart';
-import 'package:workout_fitness/view/settings/setting_view.dart';
+
+
+import 'package:workout_fitness/view/user/user_view.dart';
 
 import '../../common/color_extension.dart';
 import '../../common_widget/menu_cell.dart';
@@ -22,6 +23,7 @@ import '../weight/weight_view.dart';
 import '../../view/trainplan/train_plan.dart';
 import '../../view/settings/switch_account_view.dart';
 import '../../view/menu/customer_drawer.dart';
+import '../../view/user/user_view.dart';
 
 class MenuView extends StatefulWidget {
   const MenuView({super.key});
@@ -73,13 +75,14 @@ class _MenuViewState extends State<MenuView> {
       "tag": "3"
     },
     {"name": "Meal Plan", "image": "assets/img/menu_meal_plan.png", "tag": "5"},
-    {"name": "Schedule", "image": "assets/img/menu_schedule.png", "tag": "6"},
     {"name": "Running", "image": "assets/img/menu_running.png", "tag": "7"},
-    {"name": "Tutorials", "image": "assets/img/menu_exercises.png", "tag": "8"},
+    {"name": "Tutorials", "image": "assets/img/menu_tutorial.png", "tag": "8"},
     {"name": "Tips", "image": "assets/img/menu_tips.png", "tag": "9"},
-    {"name": "Settings", "image": "assets/img/menu_settings.png", "tag": "10"},
-    {"name": "Support", "image": "assets/img/menu_support.png", "tag": "11"},
+    {"name": "Edit Account", "image": "assets/img/menu_edituser.png", "tag": "10"},
+    {"name": "Register", "image": "assets/img/menu_register.png", "tag": "11"},
+
   ];
+
 
   String? username;
 
@@ -119,6 +122,21 @@ class _MenuViewState extends State<MenuView> {
               backgroundColor: Colors.black,
               expandedHeight: media.width * 0.6,
               collapsedHeight: kToolbarHeight + 20,
+              leading: Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: Image.asset(
+                      "assets/img/meun_close.png",
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    ),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
               flexibleSpace: Stack(
                 alignment: Alignment.bottomLeft,
                 children: [
@@ -140,8 +158,7 @@ class _MenuViewState extends State<MenuView> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 25, vertical: 30),
+                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 30),
                     child: Row(
                       children: [
                         Container(
@@ -202,7 +219,8 @@ class _MenuViewState extends State<MenuView> {
                   ),
                 ],
               ),
-            )
+            ),
+
           ];
         },
         body: GridView.builder(
@@ -280,8 +298,10 @@ class _MenuViewState extends State<MenuView> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const SettingsView()),
+                        builder: (context) => const UserDetailsPage(),
+                      ),
                     );
+
                     break;
                   case "11":
                     Navigator.push(
