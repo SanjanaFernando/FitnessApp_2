@@ -39,7 +39,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await FirebaseFirestore.instance.collection('user').doc(user.uid).update({
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
           'name': nameController.text.trim(),
           'birthYear': int.tryParse(birthYearController.text.trim()) ?? 0,
           'weight': double.tryParse(weightController.text.trim()) ?? 0.0,
